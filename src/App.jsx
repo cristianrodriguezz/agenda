@@ -12,7 +12,7 @@ function App() {
       <Header/>
       <NavBar/>
       <Routes>
-        <Route path={planner} element={<Agenda/>} />
+        <Route path={planner} element={<Agenda accountownerid={73} accountid={73}/>} />
         <Route path='/' element={<div className='bg-black'>HOMEEEEEEEEEE</div>} />
       </Routes>
     </>

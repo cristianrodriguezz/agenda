@@ -3,18 +3,20 @@ import { useEffect, useState } from "react";
 import DatePicker, { setDefaultLocale } from "react-datepicker";
 import { registerLocale } from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import axios from 'axios';
 import { createDateTime, getMaxTime, getMinTime, handleColorTimeUnvailable, timeIntervalsConvert } from "../utils/time";
 import { hour } from "../hooks/useHour";
+import {  useFetchDataCalendar } from "../utils/fetchCalendar"
+import useFetchTurn from "../utils/fetchTurns";
 
-const URL = import.meta.env.VITE_BACKEND_URL
+
 registerLocale('es', es)
 setDefaultLocale('es')
 
-const Agenda = () => {
+// eslint-disable-next-line react/prop-types
+const Agenda = ({ accountid, accountownerid}) => {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [data, setData] = useState(null)
-  const [reservedTurns, setReservedTurns] = useState([])
+  const data = useFetchDataCalendar(accountid);
+  const reservedTurns = useFetchTurn(accountownerid)
   const [excludeTimes, setExcludeTimes] = useState(null)
   const [timeInterval, setTimeInterval] = useState(60)
   const [maxTime, setMaxTime] = useState(null)
@@ -24,42 +26,6 @@ const Agenda = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date)
   }
-
-  const fetchDataTurn = async () => {
-    const params = {
-        accountownerid: 78
-    }
-    try {
-      const response = await axios.get(`${URL}/turn/get-all-turns`, {params})
-      const { data } = response.data
-      setReservedTurns(data)
-
-    } catch (error) {
-
-      console.error('Error al realizar la solicitud:', error);
-    }
-  }
-  
-
-  const fetchDataCalendar = async () => {
-    const params = {
-        accountid: 78
-    }
-    try {
-      const response = await axios.get(`${URL}/calendar/get`, {params})
-      const { data } = response
-      setData(data)
-
-
-    } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
-    }
-  }
-  
-  useEffect(() => {
-    fetchDataCalendar()
-    fetchDataTurn()
-  }, [])
 
   useEffect(() => {
 
@@ -80,7 +46,10 @@ const Agenda = () => {
   }, [data, selectedDate, reservedTurns, timeInterval])
 
 
+
   const excludeDatesReservated = (date) => {
+
+    console.log(reservedTurns)
 
     const today = new Date()
 
