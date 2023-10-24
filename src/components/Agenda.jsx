@@ -7,7 +7,7 @@ import { createDateTime, getMaxTime, getMinTime, handleColorTimeUnvailable, time
 import { hour } from "../hooks/useHour";
 import {  useFetchDataCalendar } from "../utils/fetchCalendar"
 import useFetchTurn from "../utils/fetchTurns";
-
+import { isDayDisabled } from "../utils/day";
 
 registerLocale('es', es)
 setDefaultLocale('es')
@@ -32,30 +32,19 @@ const Agenda = ({ accountid, accountownerid}) => {
     if (!data) return
 
     const { sinceHour, untilHour } = hour(data);
-    setMinTime(getMaxTime(selectedDate, sinceHour))
-    setMaxTime(getMinTime(selectedDate, untilHour))
+    setMinTime(getMinTime(selectedDate, sinceHour))
+    setMaxTime(getMaxTime(selectedDate, untilHour))
     const time = data.dataCalendar[0].calendar
     setTimeInterval(timeIntervalsConvert(time, selectedDate))
 
     
     if(!reservedTurns) return
     
-    const exclude = reservedTurns.map(turn => createDateTime(turn.dayturn, turn.sincehours))
+    const exclude = reservedTurns.map(turn => createDateTime(turn.sincehours))
     setExcludeTimes(exclude)
     
+    
   }, [data, selectedDate, reservedTurns, timeInterval])
-
-
-
-  const excludeDatesReservated = (date) => {
-
-    console.log(reservedTurns)
-
-    const today = new Date()
-
-    return date > today
-  }
-
 
 
   return (
@@ -73,11 +62,11 @@ const Agenda = ({ accountid, accountownerid}) => {
         maxTime={maxTime}
         minDate={today}
         excludeTimes={excludeTimes}
-        filterDate={excludeDatesReservated}
+        filterDate={data ? (date) => !isDayDisabled(date, reservedTurns, data) : null}
+        dayClassName={data ? (date) => isDayDisabled(date, reservedTurns, data) ? 'disable-day' : undefined : null}
         timeClassName={(time) => handleColorTimeUnvailable(time, reservedTurns)}
         placeholderText="Seleccioná una hora disponible"
       />
-      <div>{selectedDate.toString()}</div>
     </div>
   )
 }

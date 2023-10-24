@@ -4,9 +4,10 @@ const hourForDay = (hours, day) => {
   if (!timeForDay || timeForDay.length === 0) {
     return { hour: '00', minutes: '00' };
   }
+  console.log(timeForDay[0].hour.split(":"));
   const [hour, minutes] = timeForDay[0].hour.split(":")
 
-
+  console.log(hour, minutes);
   return { hour, minutes }
   
 }
@@ -85,15 +86,11 @@ export const getMaxTime = (date, hours) => {
 
 };
 
-export function createDateTime(dayTurn, sinceHours) {
+export function createDateTime( sinceHours) {
 
-  const dayTurnDate = new Date(dayTurn);
   const sinceHoursDate = new Date(`1970-01-01T${sinceHours}`);
 
   const dateTime = new Date(
-    dayTurnDate.getFullYear(),
-    dayTurnDate.getMonth(),
-    dayTurnDate.getDate(),
     sinceHoursDate.getHours(),
     sinceHoursDate.getMinutes()
   );
@@ -148,15 +145,9 @@ export const timeIntervalsConvert = (dates, selectDate) => {
 
   const matchingDate = dates.find(date => date.dayId === selectedDayOfWeek )
 
-  const intervalo = valores[matchingDate.timeRangesId];
+  const intervalo = valores[matchingDate?.timeRangesId];
   
   return intervalo
 
 
 }
-
-
-export const isDayFullyBooked = (date) => {
-  return reservations.some((reservation) => isSameDay(date, reservation.date));
-};
-
