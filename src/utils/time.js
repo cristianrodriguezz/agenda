@@ -4,10 +4,9 @@ const hourForDay = (hours, day) => {
   if (!timeForDay || timeForDay.length === 0) {
     return { hour: '00', minutes: '00' };
   }
-  console.log(timeForDay[0].hour.split(":"));
+
   const [hour, minutes] = timeForDay[0].hour.split(":")
 
-  console.log(hour, minutes);
   return { hour, minutes }
   
 }
@@ -86,7 +85,7 @@ export const getMaxTime = (date, hours) => {
 
 };
 
-export function createDateTime( sinceHours) {
+export function createDateTime(sinceHours) {
 
   const sinceHoursDate = new Date(`1970-01-01T${sinceHours}`);
 
@@ -98,24 +97,26 @@ export function createDateTime( sinceHours) {
   return dateTime;
 }
 
-export const handleColorTimeUnvailable = (time, data) => {
+export const handleColorTimeUnvailable = (time, reservedTurns) => {
 
-  const reservedTurns = []
+  if(reservedTurns.length === 0) return null
 
-  data.map( data => {
-    const dateTime = new Date(data.dayturn)
+  const reservedTurn = []
 
-    const hour = data.sincehours.split(':')[0]
-    const minutes = data.sincehours.split(':')[1]
-    const seconds = data.sincehours.split(':')[2]
+  reservedTurns.map( turn => {
+    const dateTime = new Date(turn.dayturn)
+
+    const hour = turn.sincehours.split(':')[0]
+    const minutes = turn.sincehours.split(':')[1]
+    const seconds = turn.sincehours.split(':')[2]
 
     dateTime.setHours(hour)
     dateTime.setMinutes(minutes)
     dateTime.setSeconds(seconds)
-    reservedTurns.push(dateTime.toISOString())
+    reservedTurn.push(dateTime.toISOString())
   })
 
-  return reservedTurns.some((horarioreservado) => (horarioreservado === time.toISOString())) ? "unavailable-time" : 'available-time';
+  return reservedTurn.some((horarioreservado) => (horarioreservado === time.toISOString())) ? "unavailable-time" : 'available-time';
 
 }
 
@@ -149,5 +150,15 @@ export const timeIntervalsConvert = (dates, selectDate) => {
   
   return intervalo
 
+
+}
+
+export const filterTime = (time, reservedTurns) => {
+
+  const reserved = reservedTurns.map( turn => new Date(`${turn.dayturn.split('T')[0]}T${turn.sincehours.split(':')[0]}:${turn.sincehours.split(':')[1]}:${turn.sincehours.split(':')[2]}`))
+
+  const isReserved = reserved.some( turn => turn.toISOString() === time.toISOString())
+
+  return !isReserved
 
 }

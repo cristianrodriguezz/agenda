@@ -3,17 +3,18 @@ import './App.css'
 import Header from './components/Header'
 import NavBar from './components/NavBar'
 import { routes } from './utils/routes'
-import Agenda from './components/Agenda'
+import Agenda from './views/Agenda'
+import Configuration from './views/Configuration'
 
 function App() {
-  const { planner } = routes
+  const { planner, configuration } = routes
   return (
     <>
       <Header/>
       <NavBar/>
       <Routes>
-        <Route path={planner} element={<Agenda accountownerid={73} accountid={73}/>} />
-        <Route path='/' element={<div className='bg-black'>HOMEEEEEEEEEE</div>} />
+        <Route path={planner} element={<Agenda accountownerid={84} accountid={84}/>} />
+        <Route path={configuration} element={<Configuration accountid={84}/>} />
       </Routes>
     </>
   )
